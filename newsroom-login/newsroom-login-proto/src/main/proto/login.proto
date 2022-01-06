@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package com.newsroom.login.proto.rpc;
+
+message LoginRequest {
+	string mailID = 1;
+	string mob = 2;
+	string password = 3;
+}
+
+message LoginResponse {
+	bool success = 1;
+	Data data = 2;
+}
+
+message Data {
+	string userID = 1;
+}
+
+service LoginService {
+	rpc login (LoginRequest) returns (LoginResponse);
+}
