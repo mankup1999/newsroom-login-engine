@@ -32,6 +32,13 @@
 			<artifactId>newsroom-login-proto</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.newsroom.login.mysql</groupId>
+			<artifactId>newsroom-login-mysql</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
