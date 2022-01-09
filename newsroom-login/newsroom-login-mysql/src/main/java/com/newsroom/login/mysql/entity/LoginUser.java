@@ -25,6 +25,6 @@ public class LoginUser {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "is_verified", nullable = false, columnDefinition = "boolean default false")
-	private boolean isVerified;
+	@Column(name = "is_verified", nullable = false)
+	private String isVerified;
 }

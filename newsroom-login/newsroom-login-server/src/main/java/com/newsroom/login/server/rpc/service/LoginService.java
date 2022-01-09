@@ -50,13 +50,14 @@ public class LoginService extends LoginServiceImplBase {
 		}
 
 		Data data = Data.newBuilder().setUserID("").build();
-		return LoginResponse.newBuilder().setSuccess(user.isVerified()).setData(data).build();
+		return LoginResponse.newBuilder().setSuccess(user.getIsVerified().equals("0") ? false : true).setData(data)
+				.build();
 
 	}
 
 	public LoginUser tryLogin(LoginRequest request) {
 
-		log.info("Request to Database..{}",request);
+		log.info("Request to Database..{}", request);
 
 		List<LoginUser> users = new ArrayList<LoginUser>();
 
@@ -71,7 +72,7 @@ public class LoginService extends LoginServiceImplBase {
 		}
 
 		for (LoginUser user : users) {
-			log.info("Database queried succesfully..{}",request);
+			log.info("Database queried succesfully..{}", request);
 
 			return user;
 		}
