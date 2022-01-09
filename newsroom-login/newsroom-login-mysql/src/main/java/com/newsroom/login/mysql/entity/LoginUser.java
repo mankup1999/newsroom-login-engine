@@ -12,16 +12,19 @@ import lombok.Getter;
 @Table
 public class LoginUser {
 
-    @Id
-    @Column(name = "user_id", nullable = false)
-    private String UCC;
+	@Id
+	@Column(name = "user_id", nullable = false)
+	private String UCC;
 
-    @Column(name = "mail_id", nullable = false)
-    private String mailID;
+	@Column(name = "mail_id", nullable = false)
+	private String mailID;
 
-    @Column(name = "mob_no", nullable = false)
-    private String mob;
+	@Column(name = "mob_no", nullable = false)
+	private String mob;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+	@Column(name = "password", nullable = false)
+	private String password;
+
+	@Column(name = "is_verified", nullable = false, columnDefinition = "boolean default false")
+	private boolean isVerified;
 }

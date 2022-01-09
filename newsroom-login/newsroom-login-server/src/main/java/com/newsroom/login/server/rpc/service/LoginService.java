@@ -20,68 +20,72 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LoginService extends LoginServiceImplBase {
 
-    private static LoginUserRepo loginUserRepo;
+	private static LoginUserRepo loginUserRepo;
 
-    @Override
-    public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
+	@Override
+	public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
 
-        loginUserRepo = getLoginUserRepo();
+		loginUserRepo = getLoginUserRepo();
 
-        log.info("Request: grpc login request[mail:{} mob:{} password:{}]", request.getMailID(), request.getMob(),
-                request.getPassword());
+		log.info("Request: grpc login request[mail:{} mob:{} password:{}]", request.getMailID(), request.getMob(),
+				request.getPassword());
 
-        String userID = tryLogin(request);
+		LoginUser user = tryLogin(request);
 
-        LoginResponse loginResponse = getLoginResponse(userID);
+		LoginResponse loginResponse = getLoginResponse(user);
 
-        log.info("Response: grpc login response[success:{} user-id:{} ]", loginResponse.getSuccess(),
-                loginResponse.getData().getUserID());
+		log.info("Response: grpc login response[success:{} user-id:{} ]", loginResponse.getSuccess(),
+				loginResponse.getData().getUserID());
 
-        responseObserver.onNext(loginResponse);
-        responseObserver.onCompleted();
+		responseObserver.onNext(loginResponse);
+		responseObserver.onCompleted();
 
-    }
+	}
 
-    public LoginResponse getLoginResponse(String userID) {
+	public LoginResponse getLoginResponse(LoginUser user) {
 
-        Data data = Data.newBuilder().setUserID(userID).build();
+		if (user == null) {
+			Data data = Data.newBuilder().setUserID("").build();
+			return LoginResponse.newBuilder().setSuccess(false).setData(data).build();
+		}
 
-        return LoginResponse.newBuilder().setData(data).setSuccess(isSuccess(userID)).build();
+		Data data = Data.newBuilder().setUserID("").build();
+		return LoginResponse.newBuilder().setSuccess(user.isVerified()).setData(data).build();
 
-    }
+	}
 
-    public String tryLogin(LoginRequest request) {
+	public LoginUser tryLogin(LoginRequest request) {
 
-        log.info("Request to Database..");
+		log.info("Request to Database..{}",request);
 
-        String userID = "";
-        List<LoginUser> ids = new ArrayList<LoginUser>();
+		List<LoginUser> users = new ArrayList<LoginUser>();
 
-        if (request != null) {
-            if (request.getMailID().length() == 0) {
-                ids = loginUserRepo.findByMobAndPassword(request.getMob(), request.getPassword());
-            }
+		if (request != null) {
+			if (request.getMailID().length() == 0) {
+				users = loginUserRepo.findByMobAndPassword(request.getMob(), request.getPassword());
+			}
 
-            else {
-                ids = loginUserRepo.findByMailAndPassword(request.getMailID(), request.getPassword());
-            }
-        }
+			else {
+				users = loginUserRepo.findByMailAndPassword(request.getMailID(), request.getPassword());
+			}
+		}
 
-        for (LoginUser id : ids) {
-            userID = id.getUCC();
-        }
+		for (LoginUser user : users) {
+			log.info("Database queried succesfully..{}",request);
 
-        log.info("Database queried succesfully..");
+			return user;
+		}
 
-        return userID;
-    }
+		return null;
 
-    public LoginUserRepo getLoginUserRepo() {
-        return NewsroomLoginServerApplication.repo;
-    }
+	}
 
-    public boolean isSuccess(String userID) {
-        return userID.length() == 0 ? false : true;
-    }
+	public LoginUserRepo getLoginUserRepo() {
+		return NewsroomLoginServerApplication.repo;
+	}
+
+	public boolean isSuccess(String userID) {
+		return userID.length() == 0 ? false : true;
+	}
 
 }
