@@ -49,8 +49,8 @@ public class LoginService extends LoginServiceImplBase {
 			return LoginResponse.newBuilder().setSuccess(false).setData(data).build();
 		}
 
-		Data data = Data.newBuilder().setUserID("").build();
-		return LoginResponse.newBuilder().setSuccess(user.getIsVerified().equals("0") ? false : true).setData(data)
+		Data data = Data.newBuilder().setUserID(user.getUCC()).build();
+		return LoginResponse.newBuilder().setSuccess(user.getIsVerified().equals("1") ? true : false).setData(data)
 				.build();
 
 	}
@@ -72,6 +72,9 @@ public class LoginService extends LoginServiceImplBase {
 		}
 
 		for (LoginUser user : users) {
+			
+			System.out.println(user);
+			
 			log.info("Database queried succesfully..{}", request);
 
 			return user;
