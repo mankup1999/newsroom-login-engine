@@ -5,9 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "login_user_details")
 @Table
 public class LoginUser {
